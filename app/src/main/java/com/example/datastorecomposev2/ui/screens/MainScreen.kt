@@ -1,7 +1,6 @@
 package com.example.datastorecomposev2.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -29,12 +28,14 @@ fun MainScreen(
     )
 ) {
     val textState = remember { mutableStateOf(TextFieldValue()) }
-    val userName: String = viewModel.getUserName.observeAsState().value.toString()
+    val userName: String = viewModel.readUserName.observeAsState().value.toString()
+
+    val counter: Int? = viewModel.readCounter.observeAsState().value
+
     val scope = rememberCoroutineScope()
 
     Column(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -52,11 +53,17 @@ fun MainScreen(
             onClick = {
                 scope.launch {
                     viewModel.setUserName(textState.value.text)
+                    viewModel.incrementCounter()
                 }
             },
             modifier = Modifier.padding(bottom = 24.dp)
         )
-        { Text(text = "Submit", modifier = Modifier.padding(vertical = 4.dp, horizontal = 24.dp)) }
+        {
+            Text(
+                text = "Submit № $counter",
+                modifier = Modifier.padding(vertical = 4.dp, horizontal = 24.dp)
+            )
+        }
 
         Text(
             text = userName,
